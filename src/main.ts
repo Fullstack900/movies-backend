@@ -20,13 +20,14 @@ async function bootstrap() {
 
   const config = app.get(ConfigService);
 
-  const corsOptions: CorsOptions = {
-    origin: 'http://moviesappdb.s3-website.us-east-2.amazonaws.com',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  };
+  // const corsOptions: CorsOptions = {
+  //   origin: 'http://moviesappdb.s3-website.us-east-2.amazonaws.com',
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  //   credentials: true,
+  // };
 
-  app.enableCors(corsOptions);
+  app.enableCors({ origin: config.get<string>('app.frontendHostUrl') });
+
   app.use(loggerMiddleware)
 
   if (config.get<boolean>('app.enableSwagger')) {
