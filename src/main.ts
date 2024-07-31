@@ -15,11 +15,11 @@ const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
 };
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
 
   const config = app.get(ConfigService);
 
-  app.enableCors({ origin: config.get<string>('app.frontendHostUrl') });
+  // app.enableCors({ origin: config.get<string>('app.frontendHostUrl') });
 
   app.use(loggerMiddleware)
 
