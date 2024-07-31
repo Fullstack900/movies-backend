@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { Request, Response, NextFunction } from 'express';
 import { ConfigService } from '@nestjs/config';
 import configureSwagger from './config/swagger.config';
+import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const protocol = req.protocol;
   const host = req.get('host') || 'localhost';
@@ -15,12 +16,17 @@ const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
 };
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule);
 
   const config = app.get(ConfigService);
 
-  // app.enableCors({ origin: config.get<string>('app.frontendHostUrl') });
+  const corsOptions: CorsOptions = {
+    origin: 'http://moviesappdb.s3-website.us-east-2.amazonaws.com',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  };
 
+  app.enableCors(corsOptions);
   app.use(loggerMiddleware)
 
   if (config.get<boolean>('app.enableSwagger')) {
